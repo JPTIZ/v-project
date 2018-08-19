@@ -48,11 +48,12 @@ How it works
 ------------
 
 When called, 𝛎-project:
-    1. For each subtype argument, runs it's shell-script's `pre-commands` function;
-    2. Copies `${VPROJECT_TEMPLATES}/${TYPE}/files/` directory into the new
-       `name` directory with `--interactive` (so you can apply to already
-       created projects);
-    3. For each subtype argument, runs it's shell-script's `post-commands` function.
+
+1. For each subtype argument, runs it's shell-script's `pre-commands` function;
+2. Copies `${VPROJECT_TEMPLATES}/${TYPE}/files/` directory into the new
+   `name` directory with `--interactive` (so you can apply to already
+   created projects);
+3. For each subtype argument, runs it's shell-script's `post-commands` function.
 
 Examples
 --------

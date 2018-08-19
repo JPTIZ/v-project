@@ -1,0 +1,12 @@
+[tool.poetry]
+name = "v-project"
+version = "0.1.0"
+description = "Project creation tool based on templates."
+authors = ["João Paulo Taylor Ienczak Zanette <jpaulotiz@gmail.com>"]
+license = "GPL-3.0+"
+
+[tool.poetry.dependencies]
+python = "*"
+toml = "^0.9.4"
+
+[tool.poetry.dev-dependencies]

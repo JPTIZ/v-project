@@ -1,7 +1,7 @@
 𝛎-project
 =========
 
-𝛎-project is a project creation tool based on templates.
+𝛎-project (reads "new-project") is a project creation tool based on templates.
 
 Because it runs custom shell-scripts depending on project parameters, 𝛎-project
 can be used together with tools such as

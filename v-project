@@ -1,0 +1,97 @@
+#!/usr/bin/bash
+EXEC_NAME="$(basename ${0})"
+USAGE="Usage: ${EXEC_NAME} <type> <name> [kind]
+   or: ${EXEC_NAME} [--help,-h]
+   or: ${EXEC_NAME} [--version,-V]
+
+Where:
+    type    Type of project (e.g. tex, py, rs). Used to fetch template.
+    name    Project name.
+
+    kind    Project subtype.
+            Ex: --beamer for slides when type is tex,
+                --lib for libraries when type is c or c++)"
+
+
+RED=91
+GREEN=32
+DEFAULT_FG=39
+NORMAL=0
+
+
+show-version() {
+    echo "𝛎-Project v0.1.0"
+}
+
+
+show-usage() {
+    echo "${USAGE}"
+}
+
+
+show-error() {
+    echo "[$(error "error")] ${1}"
+}
+
+
+bold() {
+    printf "\e[1m${1}\e[22m"
+}
+
+
+colored() {
+    printf "\e[${1}m${2}\e[${DEFAULT_FG}m"
+}
+
+
+error() {
+    printf $(colored ${RED} "${1}")
+}
+
+
+die() {
+    exit 1
+}
+
+
+test-args() {
+    if test -z "${1}" || test -z "${2}"
+    then
+        show-error "Missing argument(s)."
+        echo
+
+        show-usage
+        die
+    fi
+
+    case "${1}" in
+        -h | --help)
+            show-usage
+            exit 0
+        ;; -V | --version)
+            show-version
+            exit 0
+        ;;
+    esac
+
+    export TYPE="${1}"
+    export PROJECT="${2}"
+    export CURRENT_TEMPLATE="${VPROJECT_TEMPLATES}/${TYPE}"
+}
+
+
+create-project() {
+    echo "Creating a \"${TYPE}\" project named \"${PROJECT}\""
+
+    create-dir "${TYPE}" "${PROJECT}"
+}
+
+
+create-dir() {
+    cp -r "${VPROJECT_TEMPLATES}/${1}" "${2}"
+}
+
+
+export ARGS=$@
+test-args $ARGS || die
+create-project $ARGS

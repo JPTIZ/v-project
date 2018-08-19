@@ -122,20 +122,36 @@ test-args() {
 create-project() {
     show-action "Creating a \"${TYPE}\" project named \"${PROJECT}\""
 
-    copy-template
+    create-project-dir
     apply-pre-commands
+    copy-template
     apply-post-commands
 }
 
 
+create-project-dir() {
+    show-action "Creating directory \"${PROJECT}\""
+    mkdir -p "${PROJECT}"
+}
+
+
 copy-template() {
+    show-action "Copying template files"
     cp -rTi "${CURRENT_TEMPLATE}/files" "${PROJECT}"
 }
 
 
 load-template() {
-    source "${CURRENT_TEMPLATE}/${KIND}.sh" 2>/dev/null ||
+    FILE="${CURRENT_TEMPLATE}/${KIND}.sh"
+    show-action "Loading template \"${KIND}\""
+    if test -e "${FILE}"
+    then
+        source ${FILE}
+        return 0
+    else
         show-error "No template found for \"${KIND}\""
+        return 127
+    fi
 }
 
 
@@ -145,8 +161,9 @@ apply-pre-commands() {
         export KIND="$(echo "${KIND}" | sed "s/^--//")"
 
         show-action "Applying ${KIND} pre-commands..."
-        load-template "${KIND}"
-        pre-commands
+        load-template "${KIND}" &&
+            pre-commands ||
+            show-error "Failed to execute \"${KIND}\" post-commands."
     done
 }
 
@@ -156,9 +173,10 @@ apply-post-commands() {
     do
         export KIND="$(echo "${KIND}" | sed "s/^--//")"
 
-        show-action "Applying ${KIND} post-commands..."
-        load-template "${KIND}"
-        post-commands
+        show-action "Applying \"${KIND}\" post-commands..."
+        load-template "${KIND}" &&
+            post-commands ||
+            show-error "Failed to execute \"${KIND}\" post-commands."
     done
 }
 

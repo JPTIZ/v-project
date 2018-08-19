@@ -8,6 +8,6 @@ post-commands() {
     cat "${CURRENT_TEMPLATE}/user-commands-beamer.tex" \
         >> "${PROJECT}/configs/user-commands.tex"
 
-    kind-log "Changing documentclass"
+    kind-log "Changing documentclass to \"beamer\""
     sed -i 's/^\\documentclass{.*}$/\\documentclass{beamer}/' "${PROJECT}/main.tex"
 }

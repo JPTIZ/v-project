@@ -80,7 +80,7 @@ testdir
 ```
 
 If you run with `--beamer`, [beamer.sh](/exampels/tex/beamer.sh)'s
-`post-commands` will run, appending `user-commands.text` with:
+`post-commands` will run, appending `configs/user-commands.tex` with:
 
 ```tex
 \newcommand{\hcenter}[1]{%

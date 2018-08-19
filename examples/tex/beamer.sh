@@ -10,4 +10,6 @@ post-commands() {
 
     kind-log "Changing documentclass to \"beamer\""
     sed -i 's/^\\documentclass{.*}$/\\documentclass{beamer}/' "${PROJECT}/main.tex"
+
+    mv "${PROJECT}/main.tex" "${PROJECT}/slides.tex"
 }

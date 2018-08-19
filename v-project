@@ -1,6 +1,6 @@
 #!/usr/bin/bash
 EXEC_NAME="$(basename ${0})"
-USAGE="Usage: ${EXEC_NAME} <type> <name> [kind]
+USAGE="Usage: ${EXEC_NAME} <type> <name> [kinds]
    or: ${EXEC_NAME} [--help,-h]
    or: ${EXEC_NAME} [--version,-V]
 
@@ -8,13 +8,14 @@ Where:
     type    Type of project (e.g. tex, py, rs). Used to fetch template.
     name    Project name.
 
-    kind    Project subtype.
+    kinds   List of project subtypes.
             Ex: --beamer for slides when type is tex,
                 --lib for libraries when type is c or c++)"
 
 
 RED=91
 GREEN=32
+YELLOW=33
 DEFAULT_FG=39
 NORMAL=0
 
@@ -34,6 +35,21 @@ show-error() {
 }
 
 
+show-action() {
+    echo "[$(good "action")] ${1}"
+}
+
+
+kind-log() {
+    echo "$(tagged ${KIND}) ${1}"
+}
+
+
+tagged() {
+    printf "[$(warning "${1}")]"
+}
+
+
 bold() {
     printf "\e[1m${1}\e[22m"
 }
@@ -44,6 +60,16 @@ colored() {
 }
 
 
+good() {
+    printf $(colored ${GREEN} "${1}")
+}
+
+
+warning() {
+    printf $(colored ${YELLOW} "${1}")
+}
+
+
 error() {
     printf $(colored ${RED} "${1}")
 }
@@ -51,6 +77,15 @@ error() {
 
 die() {
     exit 1
+}
+
+
+test-env-vars() {
+    if test -z "${VPROJECT_TEMPLATES}"
+    then
+        show-error "VPROJECT_TEMPLATES not set."
+        die
+    fi
 }
 
 
@@ -77,21 +112,62 @@ test-args() {
     export TYPE="${1}"
     export PROJECT="${2}"
     export CURRENT_TEMPLATE="${VPROJECT_TEMPLATES}/${TYPE}"
+
+    shift 2 # Ignores type and project
+
+    export ARGS=$@
 }
 
 
 create-project() {
-    echo "Creating a \"${TYPE}\" project named \"${PROJECT}\""
+    show-action "Creating a \"${TYPE}\" project named \"${PROJECT}\""
 
-    create-dir "${TYPE}" "${PROJECT}"
+    copy-template
+    apply-pre-commands
+    apply-post-commands
 }
 
 
-create-dir() {
-    cp -r "${VPROJECT_TEMPLATES}/${1}" "${2}"
+copy-template() {
+    cp -rTi "${CURRENT_TEMPLATE}/files" "${PROJECT}"
 }
 
 
-export ARGS=$@
-test-args $ARGS || die
-create-project $ARGS
+load-template() {
+    source "${CURRENT_TEMPLATE}/${KIND}.sh" 2>/dev/null ||
+        show-error "No template found for \"${KIND}\""
+}
+
+
+apply-pre-commands() {
+    for KIND in default ${ARGS}
+    do
+        export KIND="$(echo "${KIND}" | sed "s/^--//")"
+
+        show-action "Applying ${KIND} pre-commands..."
+        load-template "${KIND}"
+        pre-commands
+    done
+}
+
+
+apply-post-commands() {
+    for KIND in default ${ARGS}
+    do
+        export KIND="$(echo "${KIND}" | sed "s/^--//")"
+
+        show-action "Applying ${KIND} post-commands..."
+        load-template "${KIND}"
+        post-commands
+    done
+}
+
+
+main() {
+    test-env-vars || die
+    test-args $ARGS || die
+    create-project $ARGS
+}
+
+
+ARGS=$@ main

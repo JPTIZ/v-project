@@ -90,15 +90,6 @@ test-env-vars() {
 
 
 test-args() {
-    if test -z "${1}" || test -z "${2}"
-    then
-        show-error "Missing argument(s)."
-        echo
-
-        show-usage
-        die
-    fi
-
     case "${1}" in
         -h | --help)
             show-usage
@@ -108,6 +99,15 @@ test-args() {
             exit 0
         ;;
     esac
+
+    if test -z "${1}" || test -z "${2}"
+    then
+        show-error "Missing argument(s)."
+        echo
+
+        show-usage
+        die
+    fi
 
     export TYPE="${1}"
     export PROJECT="${2}"

@@ -160,8 +160,8 @@ apply-pre-commands() {
     do
         export KIND="$(echo "${KIND}" | sed "s/^--//")"
 
-        show-action "Applying ${KIND} pre-commands..."
         load-template "${KIND}" &&
+            show-action "Applying ${KIND} pre-commands..." &&
             pre-commands ||
             show-error "Failed to execute \"${KIND}\" post-commands."
     done
@@ -173,8 +173,8 @@ apply-post-commands() {
     do
         export KIND="$(echo "${KIND}" | sed "s/^--//")"
 
-        show-action "Applying \"${KIND}\" post-commands..."
         load-template "${KIND}" &&
+            show-action "Applying \"${KIND}\" post-commands..." &&
             post-commands ||
             show-error "Failed to execute \"${KIND}\" post-commands."
     done

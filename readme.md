@@ -79,7 +79,7 @@ testdir
 1 directory, 4 files
 ```
 
-If you run with `--beamer`, [beamer.sh](/exampels/tex/beamer.sh)'s
+If you run with `--beamer`, [beamer.sh](/examples/tex/beamer.sh)'s
 `post-commands` will run, appending `configs/user-commands.tex` with:
 
 ```tex

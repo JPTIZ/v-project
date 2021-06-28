@@ -1,5 +1,11 @@
-𝛎-project
-=========
+𝛎-project (Abandoned)
+=====================
+
+> ## This project is abandoned
+> 
+> Note: since [cookiecutter](https://github.com/cookiecutter/cookiecutter) does
+> exactly what this project proposes (and better, with more maintance, etc.),
+> this project is abandoned in favor of the former.
 
 𝛎-project (reads "new-project") is a project creation tool based on templates.
 
